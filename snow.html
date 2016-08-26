@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>HTML5绘图——下雪了</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			body {
+				background-color: #1F5579
+			}
+			
+			.snowman {
+				position: absolute;
+				left: 50%;
+				margin-left: -165px;
+				;
+				bottom: 80px;
+				width: 330px;
+			}
+			
+			.snowfield {
+				position: absolute;
+				bottom: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--创建canvas-->
+		<div class="snowman">
+			<canvas id="canvas" width="330" height="418"></canvas>
+		</div>
+		<div class="snowfield">
+			<canvas id="canvas2" height="300"></canvas>
+		</div>
+		<div class="snowflake">
+			<canvas id="canvas3"></canvas>
+		</div>
+		<script>
+			/*第一步：得到canvas*/
+				var canvas1 = document.getElementById("canvas1");
+				var ctx1 = canvas.getContext("2d");
+				var canvas2 = document.getElementById("canvas2");
+				var ctx2 = canvas2.getContext("2d");
+				var canvas3 = document.getElementById("canvas3");
+				var ctx3 = canvas3.getContext("2d");
+			
+				//定义canvas的大小
+				var width = window.innerWidth;
+				var height=window.innerHeight;
+				canvas2.width = width;
+				canvas3.width=width;
+				canvas3.height=height-3;
+			
+			/*第二步：定义函数*/
+				//画圆函数
+				function drawCircle(color, x, y, r) {
+					ctx1.strokeStyle = ctx1.fillStyle = color;
+					ctx1.beginPath();
+					ctx1.arc(x, y, r, 0, Math.PI * 2, true);
+					ctx1.closePath();
+					ctx1.stroke();
+					ctx1.fill();
+				}
+				//画三角函数
+				function drawTriangle(color, x, y, h) {
+					ctx1.strokeStyle = ctx1.fillStyle = color
+					ctx1.beginPath();
+					ctx1.moveTo(x, y);
+					ctx1.lineTo(x - h, y - h);
+					ctx1.lineTo(x + h, y - h);
+					ctx1.closePath();
+					ctx1.fill();
+				}
+				//画矩形函数
+				function drawRectangle(color, x, y, w, h) {
+					ctx1.strokeStyle = ctx1.fillStyle = color;
+					ctx1.fillRect(x, y, w, h);
+				}
+				//画曲线函数
+				function drawCurve(color, startx, starty, x1, y1, x2, y2, endx, endy) {
+					ctx2.strokeStyle = ctx2.fillStyle = color;
+					ctx2.beginPath();
+					ctx2.moveTo(startx, starty);
+					ctx2.bezierCurveTo(x1, y1, x2, y2, endx, endy);
+					ctx2.closePath();
+					ctx2.fill();
+				}
+
+			/*第三步：开始绘制*/
+				//身体
+				drawCircle("#fff", 164, 310, 100);
+				drawCircle("#fff", 164, 190, 75);
+				drawCircle("#fff", 164, 97, 50);
+	
+				//眼睛
+				drawCircle("#000", 144, 90, 8);
+				drawCircle("#000", 184, 90, 8);
+				drawCircle("#fff", 144, 90, 2);
+				drawCircle("#fff", 184, 90, 2);
+	
+				//纽扣
+				drawCircle("#000", 164, 160, 5);
+				drawCircle("#000", 164, 200, 5);
+				drawCircle("#000", 164, 240, 5);
+	
+				//鼻子
+				drawTriangle("red", 164, 120, 10);
+	
+				//帽子
+				drawRectangle("#000", 116, 10, 94, 40);
+				drawRectangle("#000", 70, 46, 190, 20);
+	
+				//胳膊
+				drawRectangle("#000", 0, 200, 95, 16);
+				drawRectangle("#000", 232, 200, 95, 16);
+	
+				//画雪地
+				drawCurve("#fff", -200, 300, 436, 128, 200, 0, 854, 300);
+				drawCurve("#fff", 266, 300, 900, 300, 350, 0, width, 300);
+				drawCurve("#fff", 1000, 400, 852, 248, width, 0, width + 100, 300);
+
+
+
+			/*雪花飘落的动画*/
+				//雪花数目
+				var snow=100;
+				
+				//雪花坐标和半径
+				var arr=[];
+				for(i=0;i<snow;i++){
+					arr.push({
+						x:Math.random()*width,
+						y:Math.random()*height,
+						r:Math.random()*10+1
+					})
+				}
+				//画雪花
+				function DrawSnow(){
+					ctx3.clearRect(0,0,width,height);
+					ctx3.fillStyle="white";
+					ctx3.beginPath();
+					for(i=0;i<snow;i++){
+						var p=arr[i];
+						ctx3.moveTo(p.x,p.y);
+						ctx3.arc(p.x,p.y,p.r,0,Math.PI*2,false);
+					}
+					ctx3.closePath();
+					SnowFall();
+					ctx3.fill();
+				}
+				//雪花飘落
+				function SnowFall(){
+					for(i=0;i<snow;i++){
+						var p=arr[i];
+						p.x+=Math.random()*2+1;
+						if(p.x>width){
+							p.x=0;
+						}
+						p.y+=Math.random()*2+1;
+						if(p.y>height){
+							p.y=0;
+						}
+					}
+				}
+				setInterval(DrawSnow,50);
+		</script>
+	</body>
+
+</html>
